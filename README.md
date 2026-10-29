@@ -194,6 +194,7 @@ jobs:
 
 ### 🔗 Related Open-Source Projects by Anton Barinov
 
+- **[Franken-Leak-Hunter](https://github.com/Anton-Barinov/Franken-Leak-Hunter)**: Memory leak and cross-request state pollution detector for FrankenPHP, RoadRunner, and Laravel Octane.
 - **[Composer-Audit-ZeroTrust](https://github.com/Anton-Barinov/Composer-Audit-ZeroTrust)**: Supply-Chain Security & Typosquatting Auditor for Composer dependencies.
 - **[EOL-PHP-Armor](https://github.com/Anton-Barinov/EOL-PHP-Armor)**: 1-line automated security hub & hotpatching engine for EOL PHP (5.4–8.1).
 - **[PHP-Hardening-Kit](https://github.com/Anton-Barinov/PHP-Hardening-Kit)**: Modular defense-in-depth runtime WAF security kit for PHP.
