@@ -5,6 +5,11 @@
 
 declare(strict_types=1);
 
+if (ini_get('phar.readonly') === '1') {
+    passthru(PHP_BINARY . ' -d phar.readonly=0 ' . __FILE__, $code);
+    exit($code);
+}
+
 spl_autoload_register(function ($class) {
     $prefix = 'PhpToBinary\\';
     $baseDir = dirname(__DIR__) . '/src/';
