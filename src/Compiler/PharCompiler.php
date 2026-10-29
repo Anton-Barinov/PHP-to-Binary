@@ -37,8 +37,8 @@ class PharCompiler
             throw new RuntimeException("Phar compilation requires 'phar.readonly = 0'. Run with: php -d phar.readonly=0 bin/php-to-binary ...");
         }
 
-        if (!file_exists($entrypointPath)) {
-            throw new RuntimeException("Entrypoint script not found: {$entrypointPath}");
+        if (!is_file($entrypointPath)) {
+            throw new RuntimeException("Entrypoint script not found or is not a file: {$entrypointPath}");
         }
 
         if (file_exists($outputPharPath)) {

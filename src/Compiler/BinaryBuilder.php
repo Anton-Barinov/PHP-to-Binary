@@ -40,6 +40,15 @@ class BinaryBuilder
     public function build(string $entrypointPath, string $outputPath): array
     {
         $startTime = microtime(true);
+
+        $outDir = dirname($outputPath);
+        if (!is_dir($outDir) && !@mkdir($outDir, 0755, true) && !is_dir($outDir)) {
+            throw new RuntimeException("Output directory cannot be created: {$outDir}");
+        }
+        if (!is_writable($outDir)) {
+            throw new RuntimeException("Output directory is not writable: {$outDir}");
+        }
+
         $tmpPhar = sys_get_temp_dir() . '/p2b_' . uniqid() . '.phar';
 
         $compiler = new PharCompiler($this->minify, $this->includes);

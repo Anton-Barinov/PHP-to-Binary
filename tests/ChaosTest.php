@@ -146,6 +146,41 @@ PHP;
     @rmdir($tempDir);
 });
 
+// 4. Garbage Input & Out-of-Order Lifecycle Handling
+run_test("Garbage Entrypoint & Unwritable Destination Handling", function() {
+    $builder = new BinaryBuilder('auto', false, false);
+
+    // Case A: Missing or directory as entrypoint
+    $threwMissing = false;
+    try {
+        $builder->build('/non_existent_entry_' . uniqid() . '.php', sys_get_temp_dir() . '/dummy.bin');
+    } catch (\RuntimeException $e) {
+        $threwMissing = true;
+    }
+    assert($threwMissing === true, "Missing entrypoint must throw RuntimeException");
+
+    // Case B: Directory instead of file
+    $threwDir = false;
+    try {
+        $builder->build(sys_get_temp_dir(), sys_get_temp_dir() . '/dummy.bin');
+    } catch (\RuntimeException $e) {
+        $threwDir = true;
+    }
+    assert($threwDir === true, "Directory entrypoint must throw RuntimeException");
+
+    // Case C: Unwritable output destination
+    $tmpScript = tempnam(sys_get_temp_dir(), 'valid_app_');
+    file_put_contents($tmpScript, "<?php echo 'ok';");
+    $threwUnwritable = false;
+    try {
+        $builder->build($tmpScript, '/proc/non_existent_folder_99/out.bin');
+    } catch (\RuntimeException $e) {
+        $threwUnwritable = true;
+    }
+    unlink($tmpScript);
+    assert($threwUnwritable === true, "Unwritable output destination must throw RuntimeException");
+});
+
 echo "\n--------------------------------------------------------\n";
 echo "Chaos Results: {$passed} Passed, {$failed} Failed\n";
 echo "--------------------------------------------------------\n";
