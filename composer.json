@@ -1,0 +1,36 @@
+{
+  "name": "anton-barinov/php-to-binary",
+  "description": "Compile any PHP script or Composer project into a single, standalone executable binary with embedded runtime (Linux, macOS, Windows) — zero host PHP dependencies required.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anton Barinov",
+      "email": "55404783+Anton-Barinov@users.noreply.github.com",
+      "homepage": "https://github.com/Anton-Barinov"
+    }
+  ],
+  "keywords": [
+    "php",
+    "compiler",
+    "binary",
+    "standalone",
+    "cli",
+    "executable",
+    "cross-compile",
+    "micro-php",
+    "packager",
+    "go-build-for-php"
+  ],
+  "bin": [
+    "bin/php-to-binary"
+  ],
+  "autoload": {
+    "psr-4": {
+      "PhpToBinary\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0.0"
+  }
+}

@@ -1,0 +1,46 @@
+name: 'PHP-to-Binary'
+description: 'Compile PHP applications into standalone executable binaries in GitHub Actions'
+author: 'Anton Barinov'
+
+branding:
+  icon: 'package'
+  color: 'purple'
+
+inputs:
+  entrypoint:
+    description: 'Path to main PHP entrypoint script'
+    required: true
+  output:
+    description: 'Name of the compiled binary output'
+    required: false
+    default: 'app-bin'
+  standalone:
+    description: 'Whether to embed static standalone runtime (true/false)'
+    required: false
+    default: 'true'
+  target:
+    description: 'Compilation target (linux-x86_64, linux-aarch64, macos-arm64, windows-x64)'
+    required: false
+    default: 'auto'
+  minify:
+    description: 'Whether to minify PHP code (strip comments and whitespace)'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Compile PHP to Binary
+      shell: bash
+      run: |
+        CMD="php -d phar.readonly=0 ${{ github.action_path }}/bin/php-to-binary build ${{ inputs.entrypoint }} --output=${{ inputs.output }}"
+        if [ "${{ inputs.standalone }}" = "true" ]; then
+          CMD="$CMD --standalone"
+        fi
+        if [ "${{ inputs.minify }}" = "true" ]; then
+          CMD="$CMD --minify"
+        fi
+        if [ -n "${{ inputs.target }}" ] && [ "${{ inputs.target }}" != "auto" ]; then
+          CMD="$CMD --target=${{ inputs.target }}"
+        fi
+        eval "$CMD"
