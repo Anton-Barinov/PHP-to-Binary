@@ -63,7 +63,33 @@ class PharCompiler
         $phar->addFromString('entrypoint.php', $entryContent);
         $filesAdded++;
 
-        // 2. Add included directories and files (e.g., src, vendor)
+        // 2. Add loose project assets in baseDir (guarded against scanning system temp dir)
+        $sysTmp = realpath(sys_get_temp_dir()) ?: sys_get_temp_dir();
+        $realBase = realpath($baseDir) ?: $baseDir;
+
+        if ($realBase !== $sysTmp) {
+            $allowedAssetExts = ['json', 'yml', 'yaml', 'sql', 'db', 'sqlite', 'xml', 'csv', 'txt', 'ini'];
+            $baseFiles = @scandir($baseDir) ?: [];
+            foreach ($baseFiles as $bf) {
+                $fullPath = $baseDir . '/' . $bf;
+                if ($bf === '.' || $bf === '..' || $bf === $entrypointName || is_dir($fullPath)) {
+                    continue;
+                }
+                $ext = strtolower(pathinfo($bf, PATHINFO_EXTENSION));
+                if (!in_array($ext, $allowedAssetExts, true)) {
+                    continue;
+                }
+                if (SecretFilter::isExcluded($bf)) {
+                    continue;
+                }
+                $content = (string)@file_get_contents($fullPath);
+                $phar->addFromString($bf, $content);
+                $filesAdded++;
+                $totalRawBytes += strlen($content);
+            }
+        }
+
+        // 3. Add included directories and files (e.g., src, vendor)
         $dirsToScan = $this->includes;
         if (empty($dirsToScan)) {
             // Default check for src, lib, vendor in baseDir

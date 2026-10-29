@@ -15,6 +15,7 @@ $tests = [
     'SecretFilterTest.php',
     'BinaryBuilderTest.php',
     'CliIntegrationTest.php',
+    'ChaosTest.php',
 ];
 
 $allPassed = true;
